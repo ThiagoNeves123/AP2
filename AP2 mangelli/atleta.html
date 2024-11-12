@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Atleta</title>
+    <script src="atleta.js" defer></script>
+</head>
+<body>
+    <p>aguarde...</p>
+
+    <!-- Section for player cards -->
+    <div id="container"></div>
+
+    <!-- Section to display player details -->
+    <div id="player-details" style="display: none;">
+        <h1 id="player-name"></h1>
+        <img id="player-image" alt="Player Image" style="width: 200px; height: auto;">
+        <p id="player-bio"></p>
+        <p id="player-num-games"></p>
+        <button onclick="closeDetails()">Fechar</button>
+    </div>
+</body>
+</html>
+
+<script>
+    // Função para recuperar o parâmetro 'id' da URL
+    const getURLParameter = (name) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    };
+
+    // Função para mostrar os detalhes do jogador
+    const showPlayerDetails = (player) => {
+        document.getElementById('player-name').innerText = player.nome;
+        document.getElementById('player-image').src = player.imagem || 'default-image.jpg';  // Use uma imagem padrão caso não haja
+        document.getElementById('player-bio').innerText = player.bio || 'Biografia não disponível.';
+        document.getElementById('player-num-games').innerText = `Número de Jogos: ${player.nJogos}`;
+
+        // Mostra a seção de detalhes
+        document.getElementById('player-details').style.display = 'block';
+        document.getElementById('container').style.display = 'none';  // Esconde a lista de jogadores
+    };
+
+    // Função para fechar os detalhes e voltar para a lista de jogadores
+    const closeDetails = () => {
+        document.getElementById('player-details').style.display = 'none';
+        document.getElementById('container').style.display = 'block';  // Exibe novamente a lista
+    };
+
+    // Função para carregar os detalhes do jogador com base no 'id' da URL
+    const loadPlayerData = () => {
+        const id = getURLParameter('id');  // Obtém o ID do jogador da URL
+        const playerData = JSON.parse(localStorage.getItem('dados')) || JSON.parse(sessionStorage.getItem('dados'));
+
+        // Se encontramos os dados e o ID corresponde ao da URL, exibe os detalhes
+        if (playerData && playerData.id == id) {
+            showPlayerDetails(playerData);
+        } else {
+            document.getElementById('container').innerHTML = '<p>Dados do jogador não encontrados.</p>';
+        }
+    };
+
+    // Chama a função ao carregar a página
+    window.onload = loadPlayerData;
+</script>

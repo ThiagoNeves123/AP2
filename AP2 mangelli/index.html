@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botafogo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="icon.png">
+    <script src="md5-min.js"></script>
+    <script src="codigo.js" defer></script>
+</head>
+<body>
+    <input type="password" id="senha">
+    <div id="container" class="container">
+        <!-- Aqui vamos adicionar os dados dos atletas -->
+    </div>
+
+    <script>
+        // URL da API
+        const url = 'https://botafogo-atletas.mange.li/2024-1/all';
+
+        // Função para buscar e processar os dados
+        async function fetchData() {
+            try {
+                // Fazendo a requisição HTTP
+                const response = await fetch(url);
+                
+                // Verificando se a resposta foi bem-sucedida
+                if (!response.ok) {
+                    throw new Error('Falha na requisição: ' + response.status);
+                }
+
+                // Convertendo a resposta para JSON
+                const data = await response.json();
+
+                // Pegando a div com id="container" para adicionar as informações
+                const container = document.getElementById('container');
+
+                // Limpa o conteúdo da div antes de adicionar os dados
+                container.innerHTML = '';
+
+                // Verificando se os dados são válidos
+                if (Array.isArray(data) && data.length > 0) {
+                    // Iterando sobre os dados e criando os elementos HTML
+                    data.forEach(atleta => {
+                        // Criar um novo div para cada atleta
+                        const atletaDiv = document.createElement('div');
+                        atletaDiv.classList.add('atleta');
+
+                        // Adicionando as informações de cada atleta
+                        atletaDiv.innerHTML = `
+                            <h3>${atleta.nome}</h3>
+                            <p><strong>Posição:</strong> ${atleta.posicao}</p>
+                        `;
+
+                        // Adiciona a div do atleta dentro do container
+                        container.appendChild(atletaDiv);
+                    });
+                } else {
+                    container.innerHTML = '<p>Não foi possível carregar os dados dos atletas.</p>';
+                }
+
+            } catch (error) {
+                console.error('Erro ao obter dados:', error);
+                const container = document.getElementById('container');
+                container.innerHTML = '<p>Erro ao carregar os dados.</p>';
+            }
+        }
+
+        // Chama a função para buscar e exibir os dados
+        fetchData();
+    </script>
+</body>
+</html>
